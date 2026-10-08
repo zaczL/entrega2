@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Sistema para organizar projetos e acompanhar tarefas."
+    />
+    <title>Sistema de Projetos e Tarefas</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="bootScreen" class="boot-screen">
+      <div class="loader" aria-label="Carregando"></div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <main id="authView" class="auth-page" hidden>
+      <section class="auth-area">
+        <div class="auth-card">
+          <div class="auth-brand brand">
+            <span class="brand-mark">PT</span>
+            <span>Projetos &amp; Tarefas</span>
+          </div>
+
+          <div class="auth-tabs" role="tablist" aria-label="Acesso ao sistema">
+            <button id="loginTab" class="auth-tab active" type="button">Entrar</button>
+            <button id="registerTab" class="auth-tab" type="button">Criar conta</button>
+          </div>
+
+          <div id="loginPanel">
+            <div class="card-heading">
+              <span class="eyebrow">Bem-vindo de volta</span>
+              <h2>Acesse sua conta</h2>
+              <p>Informe seus dados para continuar.</p>
+            </div>
+
+            <form id="loginForm" class="form-stack">
+              <label>
+                E-mail
+                <input
+                  id="loginEmail"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="seuemail@exemplo.com"
+                  required
+                />
+              </label>
+
+              <label>
+                Senha
+                <input
+                  id="loginPassword"
+                  type="password"
+                  autocomplete="current-password"
+                  placeholder="Digite sua senha"
+                  required
+                />
+              </label>
+
+              <button class="button button-primary button-full" type="submit">
+                Entrar no sistema
+              </button>
+            </form>
+          </div>
+
+          <div id="registerPanel" hidden>
+            <div class="card-heading">
+              <span class="eyebrow">Primeiro acesso</span>
+              <h2>Crie sua conta</h2>
+              <p>O cadastro leva menos de um minuto.</p>
+            </div>
+
+            <form id="registerForm" class="form-stack">
+              <label>
+                Nome
+                <input
+                  id="registerName"
+                  type="text"
+                  autocomplete="name"
+                  placeholder="Seu nome completo"
+                  minlength="2"
+                  maxlength="100"
+                  required
+                />
+              </label>
+
+              <label>
+                E-mail
+                <input
+                  id="registerEmail"
+                  type="email"
+                  autocomplete="email"
+                  placeholder="seuemail@exemplo.com"
+                  required
+                />
+              </label>
+
+              <label>
+                Senha
+                <input
+                  id="registerPassword"
+                  type="password"
+                  autocomplete="new-password"
+                  placeholder="No mínimo 8 caracteres"
+                  minlength="8"
+                  maxlength="72"
+                  required
+                />
+              </label>
+
+              <button class="button button-primary button-full" type="submit">
+                Criar minha conta
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="appView" class="app-shell" hidden>
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark">PT</span>
+          <span>Projetos &amp; Tarefas</span>
+        </div>
+
+        <div class="user-menu">
+          <div class="user-info">
+            <strong id="userName">Usuário</strong>
+            <span id="userEmail">email@exemplo.com</span>
+          </div>
+          <button id="logoutButton" class="button button-ghost" type="button">Sair</button>
+        </div>
+      </header>
+
+      <main class="dashboard">
+        <section class="page-heading">
+          <div>
+            <span class="eyebrow">Painel principal</span>
+            <h1>Meus projetos</h1>
+            <p>Acompanhe suas tarefas e o andamento de cada projeto.</p>
+          </div>
+          <button id="newProjectButton" class="button button-primary" type="button">
+            + Novo projeto
+          </button>
+        </section>
+
+        <section class="stats-grid" aria-label="Resumo">
+          <article class="stat-card">
+            <span class="stat-icon stat-blue">P</span>
+            <div>
+              <strong id="projectCount">0</strong>
+              <span>Projetos</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon stat-orange">A</span>
+            <div>
+              <strong id="progressCount">0</strong>
+              <span>Em andamento</span>
+            </div>
+          </article>
+          <article class="stat-card">
+            <span class="stat-icon stat-green">C</span>
+            <div>
+              <strong id="completedCount">0</strong>
+              <span>Concluídas</span>
+            </div>
+          </article>
+        </section>
+
+        <section class="workspace-grid">
+          <article class="panel projects-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Projetos</h2>
+                <p>Selecione um projeto para ver as tarefas.</p>
+              </div>
+            </div>
+            <div id="projectsList" class="projects-list"></div>
+          </article>
+
+          <article class="panel tasks-panel">
+            <div id="projectDetails"></div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <div id="projectModal" class="modal-backdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+        <div class="modal-heading">
+          <div>
+            <span class="eyebrow">Projeto</span>
+            <h2 id="projectModalTitle">Novo projeto</h2>
+          </div>
+          <button id="closeProjectModal" class="icon-button" type="button" aria-label="Fechar">
+            ×
+          </button>
+        </div>
+
+        <form id="projectForm" class="form-stack">
+          <input id="projectId" type="hidden" />
+          <label>
+            Nome do projeto
+            <input
+              id="projectName"
+              type="text"
+              placeholder="Ex.: Trabalho da faculdade"
+              minlength="2"
+              maxlength="100"
+              required
+            />
+          </label>
+          <label>
+            Descrição
+            <textarea
+              id="projectDescription"
+              rows="4"
+              placeholder="Explique resumidamente o objetivo do projeto"
+              maxlength="500"
+            ></textarea>
+          </label>
+          <div class="modal-actions">
+            <button id="cancelProjectButton" class="button button-secondary" type="button">
+              Cancelar
+            </button>
+            <button class="button button-primary" type="submit">Salvar projeto</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

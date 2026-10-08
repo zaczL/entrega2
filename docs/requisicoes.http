@@ -1,0 +1,51 @@
+@baseUrl = http://localhost:3000
+@token = COLE_O_TOKEN
+@projectId = COLE_O_ID_DO_PROJETO
+
+### Cadastrar usuário
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ana Silva",
+  "email": "ana@example.com",
+  "password": "senha123"
+}
+
+### Fazer login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ana@example.com",
+  "password": "senha123"
+}
+
+### Criar projeto
+POST {{baseUrl}}/api/projects
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Trabalho da faculdade",
+  "description": "Projeto da disciplina"
+}
+
+### Criar tarefa
+POST {{baseUrl}}/api/projects/{{projectId}}/tasks
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "title": "Criar o backend",
+  "status": "IN_PROGRESS"
+}
+
+### Consultar pelo GraphQL
+POST {{baseUrl}}/graphql
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "query": "query { projects { id name tasks { title status } } }"
+}
